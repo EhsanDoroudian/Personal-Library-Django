@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        <p>Book Delete</p>
+    </h1>
+    <form method="post" action={% url "books:book-delete" book.id %}>
+        {%csrf_token %}
+        <p>Are you Sure?</p>
+        <button type="submit">Yes</button>
+        <a type="button" href={% url "books:book-list" %}>NO</a>
+    </form>
+</body>
+</html>

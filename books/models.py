@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.validators import RegexValidator
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -39,6 +40,7 @@ class Book(models.Model):
     price = models.PositiveIntegerField(verbose_name="price", blank=True, null=True)
     year = models.PositiveIntegerField(verbose_name="year", blank=True, null=True)
     shabak_number = models.CharField(
+                                unique=True,
                                 max_length=13,
                                 blank=True,
                                 verbose_name="ISBN-13",
@@ -54,6 +56,9 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} by {self.author}"
-
+    
+    def get_absolute_url(self):
+        return reverse("books:book-detail", kwargs={"pk": self.id})
+    
     class Meta:
         ordering = ['-created_datetime']

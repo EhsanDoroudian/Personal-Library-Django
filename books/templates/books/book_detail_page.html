@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        <p>{{ book.title}}</p>
+    </h1>
+
+    <p>
+        <p>{{ book.description}}</p>
+        <p>{{ book.translator}}</p>
+        <p>{{ book.author}}</p>
+        <p>{{ book.page_number}}</p>
+        <p>{{ book.price}}</p>
+    </p>
+    <p><a href={% url "books:book-list"%}>books list</a></p>
+</body>
+</html>
