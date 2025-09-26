@@ -16,9 +16,9 @@ class Category(models.Model):
 
 class Book(models.Model):
     # TODO : check all potential blank or null fields and check comments
-    Book_STATU_READ = "R"
-    BOOK_STATUS_NOT_READ = "NR"
-    BOOK_STATUS_BORROWED = "B"
+    Book_STATU_READ = ("R", "Read")
+    BOOK_STATUS_NOT_READ = ("NR", "Not Read")
+    BOOK_STATUS_BORROWED = ("B", "Borrowed")
 
     isbn13_digits_only = RegexValidator(
         regex=r'^(978|979)\d{10}$',
@@ -26,9 +26,9 @@ class Book(models.Model):
     )
 
     STATUS_CHOICES = [
-        (Book_STATU_READ, "Read"),
-        (BOOK_STATUS_NOT_READ, "Not Read"),
-        (BOOK_STATUS_BORROWED, "Borrowed")
+        Book_STATU_READ,
+        BOOK_STATUS_NOT_READ,
+        BOOK_STATUS_BORROWED
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="books")
@@ -48,7 +48,7 @@ class Book(models.Model):
                                 help_text="Enter ISBN-13 (13 digits starting with 978 or 979)"
                                 )
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="books")
-    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=Book_STATU_READ)
+    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=Book_STATU_READ[0])
     page_number = models.PositiveIntegerField(verbose_name="Number of page", null=True, blank=True)
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)
@@ -62,3 +62,9 @@ class Book(models.Model):
     
     class Meta:
         ordering = ['-created_datetime']
+        constraints = [
+        models.UniqueConstraint(
+            fields=['title', 'author', 'shabak_number'],
+            name='unique_title_author_shabak'
+            )
+        ]

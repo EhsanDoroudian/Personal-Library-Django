@@ -9,6 +9,7 @@ psycopg2-binary = "*"
 environs = {extras = ["django"], version = "*"}
 pandas = "*"
 odfpy = "*"
+django-debug-toolbar = "*"
 
 [dev-packages]
 

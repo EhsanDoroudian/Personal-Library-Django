@@ -10,6 +10,9 @@ class BookListView(generic.ListView):
     template_name = "books/books_list_page.html"
     context_object_name = "books"
 
+    def get_queryset(self):
+        return Book.objects.all().order_by("-modified_datetime")
+    
 
 class BookDetailView(generic.DetailView):
     model = Book
@@ -25,8 +28,8 @@ class BookCreateView(generic.CreateView):
     def form_invalid(self, form):
         print(form.errors)  # Debug: Print form errors to console
         return super().form_invalid(form)
-
-
+    
+ 
 class BookUpdateView(generic.UpdateView):
     model = Book
     form_class = BookForm
