@@ -251,4 +251,5 @@ http-client.private.env.json
 .idea/ApifoxUploaderProjectSetting.xml
 
 DBInfo.txt
-FronteEndCode/
+docs/
+Frontends/
