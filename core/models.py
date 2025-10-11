@@ -8,6 +8,7 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(
         max_length=11,
         validators=[RegexValidator(r'^09\d{9}$')],
-        blank= True
+        blank= True,
+        default=''
     )
     birth_date = models.DateField(blank=True, null=True)

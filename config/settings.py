@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from environs import Env
 from pathlib import Path
@@ -43,10 +44,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # third party apps
     'core',
     'books',
-    'debug_toolbar',
+
+    #allauth
+    'allauth',
+    'allauth.account',
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,9 +65,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-
+    "allauth.account.middleware.AccountMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 INTERNAL_IPS = [
        '127.0.0.1',
@@ -84,17 +95,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': env.str('ENGIN_DB'),
-        'NAME': env.str('NAME_DB'),
-        'USER': env.str('USER_DB'),
-        'PASSWORD': env.str('PASSWORD_DB'),
-        'HOST': env.str('HOST_DB'),
-        'PORT': env.int('PORT')
+        'ENGINE': env.str('ENGINE_DB', default='django.db.backends.sqlite3'),
+        'NAME': env.str('NAME_DB', default=str(BASE_DIR / 'db.sqlite3')),
+        'USER': env.str('USER_DB', default=''),
+        'PASSWORD': env.str('PASSWORD_DB', default=''),
+        'HOST': env.str('HOST_DB', default='localhost'),
+        'PORT': env.int('PORT', default=5432)  # Common default for PostgreSQL
     }
 }
 
@@ -133,10 +154,41 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# User Model
 AUTH_USER_MODEL = 'core.CustomUser'
+
+# email backends config
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+ACCOUNT_FORMS = {
+    'signup': 'core.forms.CustomSignupForm',
+}
+
+# login and logout config
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
+
+# Allauth config
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = None
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_SIGNUP_REDIRECT_URL = 'account_login'
+ACCOUNT_USERNAME_BLACKLIST = []
+ACCOUNT_UNIQUE_EMAIL = True
