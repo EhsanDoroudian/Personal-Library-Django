@@ -1,0 +1,266 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}My Book{% endblock title %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static "css/my_book.css" %}">
+{% endblock style %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Stats Section -->
+        <div class="row mb-5">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stats-box text-center">
+                    <i class="bi bi-book-fill display-6 d-block mb-2"></i>
+                    <h4>۴۲ کتاب</h4>
+                    <p class="mb-0">کل کتاب‌های شما</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stats-box text-center">
+                    <i class="bi bi-eye-fill display-6 d-block mb-2"></i>
+                    <h4>۲۸ کتاب</h4>
+                    <p class="mb-0">خوانده شده</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stats-box text-center">
+                    <i class="bi bi-bookmark-plus-fill display-6 d-block mb-2"></i>
+                    <h4>۱۴ کتاب</h4>
+                    <p class="mb-0">در حال خواندن</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stats-box text-center">
+                    <i class="bi bi-clock-fill display-6 d-block mb-2"></i>
+                    <h4>۳۲ ساعت</h4>
+                    <p class="mb-0">زمان مطالعه</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter Section -->
+        <div class="filter-section mb-4">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">دسته‌بندی</label>
+                    <select class="form-select">
+                        <option selected>همه دسته‌بندی‌ها</option>
+                        <option>روانشناسی و موفقیت</option>
+                        <option>رمان و داستان</option>
+                        <option>تاریخی</option>
+                        <option>علمی</option>
+                        <option>فلسفه</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">وضعیت مطالعه</label>
+                    <select class="form-select">
+                        <option selected>همه وضعیت‌ها</option>
+                        <option>خوانده شده</option>
+                        <option>در حال خواندن</option>
+                        <option>خوانده نشده</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">مرتب‌سازی بر اساس</label>
+                    <select class="form-select">
+                        <option selected>جدیدترین</option>
+                        <option>پربازدیدترین</option>
+                        <option>قدیمی‌ترین</option>
+                        <option>امتیاز</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">جستجوی پیشرفته</label>
+                    <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#advanceSearchModal">
+                        <i class="bi bi-search me-1"></i> فیلترهای پیشرفته
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Books Grid -->
+        <h3 class="mb-4">کتاب‌های شما <span class="badge bg-primary">۱۶ کتاب</span></h3>
+        
+        <div class="row">
+            <!-- Book 1 -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="book-card card">
+                    <div class="position-relative">
+                        <img src="https://newcdn.fidibo.com/images/books/69249_94233_normal.jpg" class="card-img-top book-img" alt="جلد کتاب اثر مرکب">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-success">خوانده شده</span>
+                        <div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: rgba(0,0,0,0.6)">
+                            <div class="rating text-center">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                                <span class="text-white ms-1">۴.۵</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">اثر مرکب</h5>
+                        <p class="card-text text-muted">نویسنده: دارن هاردی</p>
+                        <p class="card-text">امروزه کتاب‌های موفقیت بسیار زیادی به انتشار رسیده است و در شبکه‌های مجازی و رسانه‌های مختلف افراد بسیاری هستند که رمز و رازهای موفقیت را به ما ارائه می‌کنند.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary">مطالعه</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">ویرایش</button>
+                            </div>
+                            <small class="text-muted">۳۲۰ صفحه</small>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <small><i class="bi bi-clock me-1"></i> ۱۲ ساعت مطالعه</small>
+                            <small><i class="bi bi-calendar me-1"></i> ۱۴۰۲/۰۵/۱۰</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Book 2 -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="book-card card">
+                    <div class="position-relative">
+                        <img src="https://newcdn.fidibo.com/images/books/2172_24295_normal.jpg" class="card-img-top book-img" alt="جلد کتاب جاناتان مرغ دریایی">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">در حال خواندن</span>
+                        <div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: rgba(0,0,0,0.6)">
+                            <div class="rating text-center">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star"></i>
+                                <span class="text-white ms-1">۴.۰</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">جاناتان مرغ دریایی</h5>
+                        <p class="card-text text-muted">نویسنده: ریچارد باخ</p>
+                        <p class="card-text">بعضی‌ها عادت کردن را بلد نیستند. بلد نیستند در چارچوب زندگی کنند. نمی‌توانند تن به کلیشه بدهند و همواره رؤیاهایی در سر دارند.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary">مطالعه</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">ویرایش</button>
+                            </div>
+                            <small class="text-muted">۱۲۸ صفحه</small>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="progress">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <small><i class="bi bi-clock me-1"></i> ۴ ساعت مطالعه</small>
+                            <small><i class="bi bi-calendar me-1"></i> ۱۴۰۲/۰۶/۱۵</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Book 3 -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="book-card card">
+                    <div class="position-relative">
+                        <img src="https://newcdn.fidibo.com/images/books/6535_71370_normal.jpg" class="card-img-top book-img" alt="جلد کتاب برتری خفیف">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-success">خوانده شده</span>
+                        <div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: rgba(0,0,0,0.6)">
+                            <div class="rating text-center">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <span class="text-white ms-1">۴.۹</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">برتری خفیف</h5>
+                        <p class="card-text text-muted">نویسنده: جف اولسون</p>
+                        <p class="card-text">بسیاری از افراد به دنبال روشی هستند تا با کمک آن بتوانند به موفقیت‌های مالی دست یابند. منابع فراوانی از جمله سخنرانی‌ها و کتاب‌ها وجود دارند.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary">مطالعه</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">ویرایش</button>
+                            </div>
+                            <small class="text-muted">۲۴۰ صفحه</small>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <small><i class="bi bi-clock me-1"></i> ۹ ساعت مطالعه</small>
+                            <small><i class="bi bi-calendar me-1"></i> ۱۴۰۲/۰۴/۲۲</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Book 4 -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="book-card card">
+                    <div class="position-relative">
+                        <img src="https://newcdn.fidibo.com/images/books/65579_50411_normal.jpg" class="card-img-top book-img" alt="جلد کتاب هفت عادت مردمان موثر">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger">خوانده نشده</span>
+                        <div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: rgba(0,0,0,0.6)">
+                            <div class="rating text-center">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                                <i class="bi bi-star"></i>
+                                <span class="text-white ms-1">۳.۵</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">هفت عادت مردمان موثر</h5>
+                        <p class="card-text text-muted">نویسنده: استفان کاوی</p>
+                        <p class="card-text">به توصیه و تایید افراد موفق و ثروتمند و راهنمایانی که برای موفقیت مالی افراد معمولی برنامه‌ریزی می‌کنند...</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-primary">مطالعه</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">ویرایش</button>
+                            </div>
+                            <small class="text-muted">۳۸۰ صفحه</small>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <small><i class="bi bi-clock me-1"></i> ۰ ساعت مطالعه</small>
+                            <small><i class="bi bi-calendar me-1"></i> ۱۴۰۲/۰۷/۰۳</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">قبلی</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">۱</a></li>
+                <li class="page-item"><a class="page-link" href="#">۲</a></li>
+                <li class="page-item"><a class="page-link" href="#">۳</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">بعدی</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+{% endblock content %}
+
+<!-- Custom Script -->
+{% block custom_script %}
+<script src="{% static 'js/my_book.js' %}"></script>
+{% endblock custom_script %}

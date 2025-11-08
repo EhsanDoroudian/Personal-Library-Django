@@ -16,7 +16,7 @@ class Category(models.Model):
 
 class Book(models.Model):
     # TODO : check all potential blank or null fields and check comments
-    Book_STATU_READ = ("R", "Read")
+    BOOK_STATUS_READ = ("R", "Read")
     BOOK_STATUS_NOT_READ = ("NR", "Not Read")
     BOOK_STATUS_BORROWED = ("B", "Borrowed")
 
@@ -26,7 +26,7 @@ class Book(models.Model):
     )
 
     STATUS_CHOICES = [
-        Book_STATU_READ,
+        BOOK_STATUS_READ,
         BOOK_STATUS_NOT_READ,
         BOOK_STATUS_BORROWED
     ]
@@ -48,7 +48,7 @@ class Book(models.Model):
                                 help_text="Enter ISBN-13 (13 digits starting with 978 or 979)"
                                 )
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="books")
-    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=Book_STATU_READ[0])
+    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=BOOK_STATUS_READ[0])
     page_number = models.PositiveIntegerField(verbose_name="Number of page", null=True, blank=True)
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)

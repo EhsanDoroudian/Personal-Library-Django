@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock title %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts - Vazir (Persian) -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    {% block style %}{% endblock style %}
+
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="https://cdn-icons-png.flaticon.com/512/2702/2702134.png" alt="لوگو کتاب یار" height="40" class="d-inline-block align-text-top me-2">
+                <span class="fw-bold">کتاب یار</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url "books:book-list" %}"><i class="bi bi-house-fill me-1"></i> خانه</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "books:book-create" %}"><i class="bi bi-plus-circle-fill me-1"></i> اضافه کردن کتاب</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-collection-fill me-1"></i> دسته‌بندی‌ها</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-question-circle-fill me-1"></i> راهنما</a>
+                    </li>
+                </ul>
+                
+                <div class="d-flex align-items-center">
+                    <div class="theme-switch-wrapper me-4">
+                        <label class="theme-switch" for="checkbox">
+                            <input type="checkbox" id="checkbox" />
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="search-box me-3">
+                        <input type="text" class="form-control" placeholder="جستجوی کتاب...">
+                        <button class="btn btn-primary btn-sm"><i class="bi bi-search"></i></button>
+                    </div>
+                    
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> محمدهادی
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person-fill me-2"></i> پروفایل</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-bookmark-fill me-2"></i> کتاب‌های من</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i> خروج</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}{% endblock content %}
+    <!-- Footer -->
+    <footer class="footer text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3">درباره کتاب یار</h5>
+                    <p>کتاب یار یک سامانه مدیریت کتابخانه شخصی است که به شما کمک می‌کند کتاب‌های خود را سازماندهی کرده و تجربه مطالعه بهتری داشته باشید.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h5 class="mb-3">لینک‌های سریع</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">خانه</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">کتاب‌ها</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">دسته‌بندی‌ها</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">پروفایل</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5 class="mb-3">اطلاعات تماس</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-geo-alt-fill me-2"></i> تهران، خیابان آزادی</li>
+                        <li class="mb-2"><i class="bi bi-telephone-fill me-2"></i> ۰۲۱-۱۲۳۴۵۶۷۸</li>
+                        <li class="mb-2"><i class="bi bi-envelope-fill me-2"></i> info@ketabyar.com</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4">
+                    <h5 class="mb-3">خبرنامه</h5>
+                    <p>با عضویت در خبرنامه از جدیدترین کتاب‌ها و مقالات باخبر شوید.</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="ایمیل شما">
+                        <button class="btn btn-primary">عضویت</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">© ۱۴۰۲ - تمام حقوق برای کتاب یار محفوظ است.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-5"></i></a>
+                    <a href="#" class="text-white me-3"><i class="bi bi-telegram fs-5"></i></a>
+                    <a href="#" class="text-white me-3"><i class="bi bi-twitter fs-5"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-linkedin fs-5"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block custom_script %}{% endblock custom_script %}
+
+</body>
+</html>

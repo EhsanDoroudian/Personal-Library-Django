@@ -1,21 +1,302 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
-</head>
-<body>
-    <h1>
-        Book List
-    </h1>
+{% extends "_base.html" %}
+{% load static %}
+{% load book_filters %}
 
-    <p>
-        {%for book in books %}
-        <p><a href={% url "books:book-detail" book.id%}>{{book.title}}</a></p>
-        <p>{{ book.description}}</p>
-        <p>{{ book.price}}</p>
-        {%endfor%}
-    </p>
-</body>
-</html>
+{% block title %}کتاب‌ها - کتاب یار{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static "css/book_list.css" %}">
+{% endblock style %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="container mt-4">
+    <!-- Stats Section -->
+    <div class="row mb-5">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-box text-center">
+                <i class="bi bi-book-fill display-6 d-block mb-2"></i>
+                <h4>{{ books_number }} کتاب</h4>
+                <p class="mb-0">کل کتاب‌های سامانه</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-box text-center">
+                <i class="bi bi-people-fill display-6 d-block mb-2"></i>
+                <h4>{{ users_number }} کاربر</h4>
+                <p class="mb-0">کاربران فعال</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-box text-center">
+                <i class="bi bi-star-fill display-6 d-block mb-2"></i>
+                <h4>۴.۲/۵</h4>
+                <p class="mb-0">میانگین امتیاز</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-box text-center">
+                <i class="bi bi-eye-fill display-6 d-block mb-2"></i>
+                <h4>۲۸۴۵</h4>
+                <p class="mb-0">بازدید امروز</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Active Filters Display -->
+    {% if current_search or current_category or current_status or current_author or current_publisher or current_year_from or current_year_to or current_pages_min or current_pages_max %}
+    <div class="alert alert-info mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong>فیلترهای فعال:</strong>
+                {% if current_search %}<span class="badge bg-primary me-2">جستجو: "{{ current_search }}"</span>{% endif %}
+                {% if current_category_obj %}<span class="badge bg-primary me-2">دسته‌بندی: {{ current_category_obj.title }}</span>{% endif %}                {% if current_status %}<span class="badge bg-primary me-2">وضعیت: {{ current_status|status_display }}</span>{% endif %}
+                {% if current_author %}<span class="badge bg-primary me-2">نویسنده: {{ current_author }}</span>{% endif %}
+                {% if current_publisher %}<span class="badge bg-primary me-2">ناشر: {{ current_publisher }}</span>{% endif %}
+                {% if current_year_from or current_year_to %}<span class="badge bg-primary me-2">سال: {{ current_year_from|default:"" }} تا {{ current_year_to|default:"" }}</span>{% endif %}
+                {% if current_pages_min or current_pages_max %}<span class="badge bg-primary me-2">صفحات: {{ current_pages_min|default:"" }} تا {{ current_pages_max|default:"" }}</span>{% endif %}
+            </div>
+            <a href="{% url 'books:book-list' %}" class="btn btn-sm btn-outline-danger">حذف همه فیلترها</a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Filter Section -->
+    <div class="filter-section mb-4">
+        <form method="get" id="filterForm">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">دسته‌بندی</label>
+                    <select class="form-select" name="category" onchange="this.form.submit()">
+                        <option value="">همه دسته‌بندی‌ها</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if current_category == category.id|stringformat:"i" %}selected{% endif %}>
+                            {{ category.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">وضعیت کتاب</label>
+                    <select class="form-select" name="status" onchange="this.form.submit()">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="R" {% if current_status == "R" %}selected{% endif %}>خوانده شده</option>
+                        <option value="NR" {% if current_status == "NR" %}selected{% endif %}>خوانده نشده</option>
+                        <option value="B" {% if current_status == "B" %}selected{% endif %}>امانت گرفته شده</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">جستجو</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="جستجوی کتاب..." value="{{ current_search }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">فیلترهای پیشرفته</label>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#advanceSearchModal">
+                            <i class="bi bi-funnel me-1"></i> فیلترهای پیشرفته
+                        </button>
+                        {% if current_author or current_publisher or current_year_from or current_year_to or current_pages_min or current_pages_max %}
+                        <button type="button" class="btn btn-outline-warning" onclick="clearAdvancedFilters()">
+                            <i class="bi bi-x-circle me-1"></i> حذف فیلترهای پیشرفته
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hidden fields for advanced filters to maintain state -->
+            <input type="hidden" name="author" value="{{ current_author }}">
+            <input type="hidden" name="publisher" value="{{ current_publisher }}">
+            <input type="hidden" name="year_from" value="{{ current_year_from }}">
+            <input type="hidden" name="year_to" value="{{ current_year_to }}">
+            <input type="hidden" name="pages_min" value="{{ current_pages_min }}">
+            <input type="hidden" name="pages_max" value="{{ current_pages_max }}">
+        </form>
+    </div>
+    
+    <!-- Books Grid -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">همه کتاب‌ها 
+            <span class="badge bg-primary">{{ page_obj.paginator.count }} کتاب</span>
+        </h3>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary active" id="gridView">
+                <i class="bi bi-grid-3x3-gap"></i>
+            </button>
+            <button type="button" class="btn btn-outline-primary" id="listView">
+                <i class="bi bi-list-ul"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="row" id="booksContainer">
+        {% for book in books %}
+        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+            <div class="book-card card">
+                <div class="position-relative">
+                    <img src="https://newcdn.fidibo.com/images/books/69249_94233_normal.jpg" class="card-img-top book-img" alt="{{ book.title }}">
+                    <div class="book-actions">
+                        <button class="btn btn-light btn-sm me-1"><i class="bi bi-heart"></i></button>
+                        <button class="btn btn-light btn-sm"><i class="bi bi-bookmark"></i></button>
+                    </div>
+                    <div class="position-absolute top-0 start-0 m-2">
+                        {% if book.status == "R" %}
+                        <span class="badge bg-success">خوانده شده</span>
+                        {% elif book.status == "NR" %}
+                        <span class="badge bg-warning text-dark">خوانده نشده</span>
+                        {% elif book.status == "B" %}
+                        <span class="badge bg-info">امانت گرفته شده</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'books:book-detail' book.id %}">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                    </a>
+                    <p class="card-text text-muted">نویسنده: {{ book.author }}</p>
+                    <p class="card-text">{{ book.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="https://ui-avatars.com/api/?name={{ book.user.username }}&background=random" class="user-avatar me-2" alt="{{ book.user.username }}">
+                            <small>{{ book.user.username }}</small>
+                        </div>
+                        {% if book.page_number %}
+                        <small class="text-muted">{{ book.page_number }} صفحه</small>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <small><i class="bi bi-eye me-1"></i> ۱۲۵ بازدید</small>
+                        <small><i class="bi bi-calendar me-1"></i>{{ book.created_datetime|date:"Y/m/d" }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-book display-1 text-muted"></i>
+            <h4 class="text-muted mt-3">کتابی یافت نشد</h4>
+            <p class="text-muted">هیچ کتابی با فیلترهای انتخابی شما مطابقت ندارد.</p>
+            <a href="{% url 'books:book-list' %}" class="btn btn-primary mt-3">حذف همه فیلترها</a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">قبلی</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">قبلی</a>
+            </li>
+            {% endif %}
+    
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">بعدی</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#">بعدی</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Advanced Search Modal -->
+<div class="modal fade" id="advanceSearchModal" tabindex="-1" aria-labelledby="advanceSearchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="advanceSearchModalLabel"><i class="bi bi-funnel me-2"></i>فیلترهای پیشرفته</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="advancedFilterForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">نویسنده</label>
+                            <select class="form-select" name="author" id="authorSelect">
+                                <option value="">همه نویسندگان</option>
+                                {% for author in all_authors %}
+                                    {% if author %}
+                                    <option value="{{ author }}" {% if current_author == author %}selected{% endif %}>{{ author }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">ناشر</label>
+                            <select class="form-select" name="publisher" id="publisherSelect">
+                                <option value="">همه ناشران</option>
+                                {% for publisher in all_publishers %}
+                                    {% if publisher %}
+                                    <option value="{{ publisher }}" {% if current_publisher == publisher %}selected{% endif %}>{{ publisher }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">سال انتشار از</label>
+                            <select class="form-select" name="year_from" id="yearFromSelect">
+                                <option value="">هر سالی</option>
+                                {% for year in all_years %}
+                                <option value="{{ year }}" {% if current_year_from == year|add:"0" %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">سال انتشار تا</label>
+                            <select class="form-select" name="year_to" id="yearToSelect">
+                                <option value="">هر سالی</option>
+                                {% for year in all_years %}
+                                <option value="{{ year }}" {% if current_year_to == year|stringformat:"i" %}selected{% endif %}>{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">حداقل تعداد صفحات</label>
+                            <input type="number" class="form-control" name="pages_min" placeholder="حداقل صفحات" value="{{ current_pages_min }}" min="1">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">حداکثر تعداد صفحات</label>
+                            <input type="number" class="form-control" name="pages_max" placeholder="حداکثر صفحات" value="{{ current_pages_max }}" min="1">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                <button type="button" class="btn btn-warning" onclick="clearAdvancedFilters()">حذف فیلترها</button>
+                <button type="button" class="btn btn-primary" onclick="applyAdvancedFilters()">اعمال فیلترها</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Custom Script -->
+{% block custom_script %}
+<script src="{% static 'js/book_list.js' %}"></script>
+{% endblock custom_script %}
